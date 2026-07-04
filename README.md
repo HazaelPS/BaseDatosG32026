@@ -76,12 +76,31 @@ ORDER BY i.fecha_registro DESC;
 ├── 📁 **05_sql_lmd/** _# Scripts de consultas y manipulación (.sql)_<br>
 └── **README.md** # Presentación del curso_<br>
 
-## 🛠️ Tecnologías Sugeridas
+## 🛠 Tecnologías
 
-Draw.io / Lucidchart<br>
-MySQL / PostgreSQL / SQL Server<br>
-DBeaver / Azure Data Studio / Workbench<br>
+- MySQL
+- PostgreSQL
+- SQL Server
+- DBeaver
+- Draw.io
+- Azure Data Studio
+
+---
 
 ## 👤 Autor
 
 Sadday Hazael Pineda Soledad — Desarrollador de software en formación, apasionado por las bases de datos, redes y el desarrollo de software.
+🎓 Estudiante de Ingeniería en Desarrollo de Software En Multiplataforma
+
+💻 Interesado en:
+
+- Bases de Datos
+- Redes de Computadoras
+- Ciberseguridad
+- Desarrollo de Software
+- Linux
+- Cloud Computing
+
+---
+
+⭐ Si este repositorio te fue útil, considera darle una estrella.

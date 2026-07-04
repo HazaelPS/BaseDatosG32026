@@ -107,4 +107,4 @@ docker run -d -p 80:80 docker/getting-started
 \```
 docker run -d --name server-MariaDBG3 -p 3342:3306 -e MARIADB_ROOT_PASSWORD=12345 70385
 \```
->>>>>>> 8a30043e23a71285e534c2900dbc07efba7f7f65
+>>>>>>> 

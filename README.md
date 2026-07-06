@@ -113,7 +113,7 @@ ORDER BY i.fecha_registro DESC;
 Sadday Hazael Pineda Soledad — Desarrollador de software en formación, apasionado por las bases de datos, redes y el desarrollo de software.
 🎓 Estudiante de Ingeniería en Desarrollo de Software En Multiplataforma
 
-🔗 LinkedIn: [sadday-hazael-pineda-soledad](https://www.linkedin.com/in/sadday-hazael-pineda-soledad-bb2720332/)
+🔗 LinkedIn: [Sadday-Hazael-Pineda-Soledad](https://www.linkedin.com/in/sadday-hazael-pineda-soledad-bb2720332/)
 
 💻 Interesado en:
 

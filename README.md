@@ -1,24 +1,38 @@
 # 📊 Curso de Bases de Datos: De los Fundamentos al Lenguaje SQL
 
-**¡Bienvenido al repositorio de la materia de Bases de datos!**<br>
+**¡Bienvenido al repositorio de la materia de Bases de datos!** <\br>
 Este espacio está diseñado para consolidar todos los conocimientos teóricos y prácticos adquiridos a lo largo del curso, abarcando desde la abstracción conceptual de la información hasta la manipulación e implementación de bases de datos relacionales robustas.
 
-## 🗺️ Mapa de Ruta del Aprendizaje (Roadmap)<br>
-**1. Fundamentos** ──> **2. Modelo E-R** ──> **3. Modelo Relacional** ──> **4. SQL-LDD** ──> **5. SQL-LMD**
+## 🗺️ Mapa de Ruta del Aprendizaje (Roadmap)
 
-### 📚 Contenido del Curso1. 🔍 Fundamentos de Bases de Datos
+#### 1. 🔍 Fundamentos de Bases de Datos.
+
+#### 2.📐 Modelado de Datos: Modelo Entidad-Relación (E-R)
+
+#### 3.🗂 El Modelo Relacional
+
+#### 4. 🏗 Construcción con SQL-LDD
+
+#### 5. ⚡ Manipulación con SQL-LMD
+
+### 📚 Contenido del Curso
+
+#### 1.🔍 Fundamentos de Bases de Datos
+
 Introducción a los conceptos clave para entender cómo y por qué almacenamos datos de forma estructurada.
 Diferencia entre datos e información, evolución de los archivos tradicionales a las Bases de Datos.
 Arquitectura ANSI-SPARC (tres niveles), componentes y objetivos de un SGBD.
 Comprensión de los niveles físico, conceptual y de visión.
 
 #### 1. 📐 Modelado de Datos: Modelo Entidad-Relación (E-R)
+
 La fase de diseño conceptual donde transformamos requerimientos del mundo real en diagramas estructurados.
 Entidades fuertes/débiles; atributos clave, compuestos, multivalorados y derivados.
 Cardinalidad y participación (1:1, 1:N, N:M).
 Creación de diagramas conceptuales claros para representar la lógica del negocio.
 
 #### 2. El Modelo Relacional
+
 Transición del modelo conceptual (E-R) al modelo lógico apto para sistemas modernos.
 Tablas, tuplas (filas), atributos (columnas) y dominios.
 Identificación de Claves Primarias (PK) y Claves Foráneas (FK).

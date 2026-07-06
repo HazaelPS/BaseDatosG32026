@@ -1,9 +1,7 @@
 # 📊 Curso de Bases de Datos: De los Fundamentos al Lenguaje SQL
 
-<p align="center">
-
     <img src="./img/docker.png" width="900">
-</p>
+    
 **¡Bienvenido al repositorio de la materia de Bases de datos!**
 
 Este espacio está diseñado para consolidar todos los conocimientos teóricos y prácticos adquiridos a lo largo del curso, abarcando desde la abstracción conceptual de la información hasta la manipulación e implementación de bases de datos relacionales robustas.

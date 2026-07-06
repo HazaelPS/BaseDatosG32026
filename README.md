@@ -10,7 +10,7 @@ Este espacio está diseñado para consolidar todos los conocimientos teóricos y
 
 ## 🗺️ Mapa de Ruta del Aprendizaje (Roadmap)
 
-#### 1. 🔍 Fundamentos de Bases de Datos
+#### 1. 🔍 Fundamentos de Bases de Datos.
 
 #### 2.📐 Modelado de Datos: Modelo Entidad-Relación (E-R)
 
@@ -90,12 +90,12 @@ ORDER BY i.fecha_registro DESC;
 
 ## 📂 Estructura del Repositorio
 
-├── 📁 **01_fundamentos/** # Apuntes teóricos.
-├── 📁 **02_modelo_er/** # Diagramas y casos de estudio
-├── 📁 **03_modelo_relacional/** # Ejercicios de mapeo
-├── 📁 **04_sql_ldd/** # Scripts de creación de esquemas (.sql)
-├── 📁 **05_sql_lmd/** # Scripts de consultas y manipulación (.sql)
-└── **README.md/** # Presentación del curso
+├── 📁 **01_fundamentos/** # Apuntes teóricos. </br>
+├── 📁 **02_modelo_er/** # Diagramas y casos de estudio. </br>
+├── 📁 **03_modelo_relacional/** # Ejercicios de mapeo. </br>
+├── 📁 **04_sql_ldd/** # Scripts de creación de esquemas (.sql). </br>
+├── 📁 **05_sql_lmd/** # Scripts de consultas y manipulación (.sql). </br>
+└── **README.md/** # Presentación del curso.
 
 ## 🛠 Tecnologías
 

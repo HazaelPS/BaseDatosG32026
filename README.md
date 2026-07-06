@@ -2,7 +2,7 @@
 
 <p align="center">
 
-    <img src="./img/docker.png" alt="Banner Bases de Datos" width="900">
+    <img src="./img/docker.png" width="900">
 </p>
 **¡Bienvenido al repositorio de la materia de Bases de datos!**
 

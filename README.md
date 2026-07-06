@@ -40,7 +40,8 @@ Proceso de mapeo de entidades y relaciones hacia tablas físicas.
 Restricciones y acciones en cascada (ON DELETE / ON UPDATE).
 
 #### 3. Construcción con SQL-LDD (Lenguaje de Definición de Datos)
-Implementación física de la estructura de la base de datos utilizando código SQL estándar.<br>
+
+Implementación física de la estructura de la base de datos utilizando código SQL estándar. <\br>
 CREATE, ALTER y DROP.
 PRIMARY KEY, FOREIGN KEY, UNIQUE, NOT NULL y CHECK.
 

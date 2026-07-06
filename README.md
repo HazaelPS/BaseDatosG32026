@@ -1,11 +1,16 @@
 # 📊 Curso de Bases de Datos: De los Fundamentos al Lenguaje SQL
 
-**¡Bienvenido al repositorio de la materia de Bases de datos!** <\br>
+<p align="center">
+
+    <img src="./img/docker.png" alt="Banner Bases de Datos" width="900">
+</p>
+**¡Bienvenido al repositorio de la materia de Bases de datos!**
+
 Este espacio está diseñado para consolidar todos los conocimientos teóricos y prácticos adquiridos a lo largo del curso, abarcando desde la abstracción conceptual de la información hasta la manipulación e implementación de bases de datos relacionales robustas.
 
 ## 🗺️ Mapa de Ruta del Aprendizaje (Roadmap)
 
-#### 1. 🔍 Fundamentos de Bases de Datos.
+#### 1. 🔍 Fundamentos de Bases de Datos
 
 #### 2.📐 Modelado de Datos: Modelo Entidad-Relación (E-R)
 
@@ -66,9 +71,10 @@ FOREIGN KEY (alumno_id) REFERENCES alumnos(alumno_id) ON DELETE CASCADE
 ```
 
 #### 5. Manipulación con SQL-LMD (Lenguaje de Manipulación de Datos)
+
 Interacción directa con los datos almacenados para consulta y modificación.
-**INSERT**, **SELECT**, **UPDATE** y **DELETE**. <br>
-Uso de **WHERE*, **ORDER BY**, **GROUP BY** y **HAVING**. <br>
+**INSERT**, **SELECT**, **UPDATE** y **DELETE**.
+Uso de **WHERE*, **ORDER BY**, **GROUP BY** y **HAVING**.
 Combinación de tablas mediante **INNER JOIN**, **LEFT JOIN** y **RIGHT JOIN**.
 
 ```sql
@@ -84,12 +90,12 @@ ORDER BY i.fecha_registro DESC;
 
 ## 📂 Estructura del Repositorio
 
-├── 📁 **01_fundamentos/**   _# Apuntes teóricos_<br>
-├── 📁 **02_modelo_er/** _# Diagramas y casos de estudio_<br>
-├── 📁 **03_modelo_relacional/** _# Ejercicios de mapeo_<br>
-├── 📁 **04_sql_ldd/** _# Scripts de creación de esquemas (.sql)_<br>
-├── 📁 **05_sql_lmd/** _# Scripts de consultas y manipulación (.sql)_<br>
-└── **README.md** # Presentación del curso_<br>
+├── 📁 **01_fundamentos/** # Apuntes teóricos.
+├── 📁 **02_modelo_er/** # Diagramas y casos de estudio
+├── 📁 **03_modelo_relacional/** # Ejercicios de mapeo
+├── 📁 **04_sql_ldd/** # Scripts de creación de esquemas (.sql)
+├── 📁 **05_sql_lmd/** # Scripts de consultas y manipulación (.sql)
+└── **README.md/** # Presentación del curso
 
 ## 🛠 Tecnologías
 

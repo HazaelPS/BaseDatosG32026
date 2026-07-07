@@ -1,7 +1,9 @@
 # 📊 Curso de Bases de Datos: De los Fundamentos al Lenguaje SQL
 
 <p align="center">
+
   <img src="img/docker.png" alt="Banner" width="900">
+  
 </p>
 
 **¡Bienvenido al repositorio de la materia de Bases de datos!**
@@ -123,6 +125,7 @@ Sadday Hazael Pineda Soledad — Desarrollador de software en formación, apasio
 - Desarrollo de Software
 - Linux
 - Cloud Computing
+
 ---
 
 ⭐ Si este repositorio te fue útil, considera darle una estrella.

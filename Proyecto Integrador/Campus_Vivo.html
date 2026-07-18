@@ -1,0 +1,1485 @@
+// Path: Proyecto Integrador\Campus_Vivo.html
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Vivo · Cuidado animal universitario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+         :root {
+            --forest: #25462F;
+            --forest-deep: #16301D;
+            --moss: #6E9169;
+            --cream: #F6F1E4;
+            --paper: #FCFAF3;
+            --amber: #E6A54C;
+            --bark: #4B372A;
+            --clay: #C1694A;
+            --sky: #DCE9DE;
+            --ink: #1E2A1F;
+            --line: rgba(30, 42, 31, 0.12);
+            --radius: 18px;
+            --shadow: 0 10px 30px rgba(22, 48, 29, 0.12);
+            font-size: 16px;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        h1,
+        h2,
+        h3,
+        .display {
+            font-family: 'Fraunces', serif;
+        }
+        
+         ::selection {
+            background: var(--amber);
+            color: var(--forest-deep);
+        }
+        /* ---------- LAYOUT ---------- */
+        
+        #app {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 230px;
+            flex-shrink: 0;
+            background: var(--forest);
+            color: var(--sky);
+            padding: 28px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+        }
+        
+        .sidebar .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding: 0 6px;
+        }
+        
+        .sidebar .brand .paw {
+            font-size: 26px;
+        }
+        
+        .sidebar .brand span {
+            font-family: 'Fraunces', serif;
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: var(--paper);
+        }
+        
+        .trail {
+            position: relative;
+            padding-left: 6px;
+        }
+        
+        .trail::before {
+            content: "";
+            position: absolute;
+            left: 20px;
+            top: 8px;
+            bottom: 8px;
+            width: 2px;
+            background: repeating-linear-gradient(to bottom, rgba(230, 165, 76, 0.4) 0 6px, transparent 6px 12px);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.92rem;
+            font-weight: 500;
+            color: var(--sky);
+            position: relative;
+            transition: background .2s, color .2s, transform .15s;
+            z-index: 1;
+        }
+        
+        .nav-item .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--moss);
+            flex-shrink: 0;
+            transition: all .2s;
+            border: 2px solid var(--forest);
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateX(2px);
+        }
+        
+        .nav-item.active {
+            background: var(--paper);
+            color: var(--forest-deep);
+        }
+        
+        .nav-item.active .dot {
+            background: var(--amber);
+        }
+        
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 14px 12px;
+            font-size: 0.75rem;
+            color: rgba(220, 233, 222, 0.55);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 16px;
+        }
+        
+        main {
+            flex: 1;
+            padding: 34px 42px 60px;
+            max-width: 1180px;
+        }
+        
+        .view {
+            display: none;
+            animation: fadeUp .45s ease both;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--clay);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .eyebrow::before {
+            content: "";
+            width: 16px;
+            height: 1px;
+            background: var(--clay);
+        }
+        
+        h1.page-title {
+            font-size: 2.1rem;
+            font-weight: 600;
+            color: var(--forest-deep);
+            margin: 0 0 6px;
+        }
+        
+        .subtitle {
+            color: #5b6b5c;
+            font-size: 0.98rem;
+            margin: 0 0 28px;
+            max-width: 600px;
+        }
+        /* ---------- CARDS / GRID ---------- */
+        
+        .grid {
+            display: grid;
+            gap: 18px;
+        }
+        
+        .g-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .g-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .g-2 {
+            grid-template-columns: 2fr 1fr;
+        }
+        
+        @media(max-width:1000px) {
+            .g-3,
+            .g-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .g-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: var(--paper);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--line);
+        }
+        
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card .num {
+            font-family: 'Fraunces', serif;
+            font-size: 2.4rem;
+            font-weight: 600;
+            color: var(--forest-deep);
+            line-height: 1;
+        }
+        
+        .stat-card .lbl {
+            font-size: 0.82rem;
+            color: #6b7a6c;
+            margin-top: 6px;
+        }
+        
+        .stat-card .icon {
+            position: absolute;
+            right: 14px;
+            top: 14px;
+            font-size: 1.6rem;
+            opacity: 0.5;
+        }
+        /* Animal card */
+        
+        .animal-card {
+            background: var(--paper);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+        }
+        
+        .animal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 34px rgba(22, 48, 29, 0.18);
+        }
+        
+        .animal-media {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.4rem;
+            position: relative;
+        }
+        
+        .animal-body {
+            padding: 14px 16px 16px;
+        }
+        
+        .animal-body h3 {
+            margin: 0 0 4px;
+            font-size: 1.05rem;
+            color: var(--forest-deep);
+        }
+        
+        .animal-body .meta {
+            font-size: 0.78rem;
+            color: #6b7a6c;
+            margin-bottom: 8px;
+        }
+        
+        .badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: .03em;
+            padding: 3px 9px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+        
+        .badge.ok {
+            background: #DEEFD9;
+            color: #2E6B36;
+        }
+        
+        .badge.warn {
+            background: #FBE5C8;
+            color: #9A5B12;
+        }
+        
+        .badge.care {
+            background: #F7D9D0;
+            color: #A6402A;
+        }
+        /* ---------- BUTTONS/FORMS ---------- */
+        
+        .btn {
+            border: none;
+            padding: 11px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform .15s, box-shadow .15s;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .btn:active {
+            transform: scale(0.97);
+        }
+        
+        .btn-primary {
+            background: var(--forest);
+            color: var(--paper);
+            box-shadow: 0 6px 16px rgba(37, 70, 47, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: var(--forest-deep);
+        }
+        
+        .btn-amber {
+            background: var(--amber);
+            color: var(--forest-deep);
+            box-shadow: 0 6px 16px rgba(230, 165, 76, 0.35);
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            border: 1.5px solid var(--line);
+            color: var(--forest-deep);
+        }
+        
+        .btn-ghost:hover {
+            border-color: var(--forest);
+        }
+        
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+        
+        .chip {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: var(--paper);
+            border: 1.5px solid var(--line);
+            font-size: 0.83rem;
+            cursor: pointer;
+            font-weight: 500;
+            color: #516152;
+            transition: all .15s;
+        }
+        
+        .chip.active,
+        .chip:hover {
+            background: var(--forest);
+            color: var(--paper);
+            border-color: var(--forest);
+        }
+        
+        label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--forest-deep);
+            margin: 0 0 6px;
+        }
+        
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 11px 13px;
+            border-radius: 10px;
+            border: 1.5px solid var(--line);
+            background: var(--paper);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--ink);
+            margin-bottom: 16px;
+            transition: border-color .15s;
+        }
+        
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--moss);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+        
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        /* ---------- LOGIN ---------- */
+        
+        .login-wrap {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(160deg, var(--forest-deep) 0%, var(--forest) 55%, #3a6b45 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-wrap .leaf {
+            position: absolute;
+            font-size: 120px;
+            opacity: 0.07;
+            color: var(--paper);
+        }
+        
+        .login-card {
+            background: var(--paper);
+            border-radius: 24px;
+            padding: 44px 40px;
+            width: 380px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35);
+            position: relative;
+            z-index: 2;
+            animation: fadeUp .6s ease;
+        }
+        
+        .login-card .paw-big {
+            font-size: 38px;
+            margin-bottom: 6px;
+        }
+        
+        .login-card h1 {
+            font-size: 1.6rem;
+            margin: 0 0 4px;
+            color: var(--forest-deep);
+        }
+        
+        .login-card p.sub {
+            color: #6b7a6c;
+            font-size: 0.87rem;
+            margin: 0 0 26px;
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 18px 0;
+            color: #94a195;
+            font-size: 0.75rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+        /* ---------- ANIMAL DETAIL ---------- */
+        
+        .detail-hero {
+            border-radius: 24px;
+            padding: 36px;
+            background: linear-gradient(135deg, var(--forest) 0%, var(--moss) 120%);
+            color: var(--paper);
+            display: flex;
+            gap: 28px;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .detail-hero .avatar {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            flex-shrink: 0;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .detail-hero h2 {
+            margin: 0 0 6px;
+            font-size: 1.8rem;
+        }
+        
+        .detail-hero .tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .detail-hero .tags span {
+            background: rgba(255, 255, 255, 0.18);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            border-radius: 6px;
+            background: var(--sky);
+            overflow: hidden;
+            margin: 8px 0 4px;
+        }
+        
+        .progress-bar>div {
+            height: 100%;
+            background: var(--amber);
+            border-radius: 6px;
+        }
+        /* ---------- CALENDAR / FEEDING ---------- */
+        
+        .feed-slot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1.5px solid var(--line);
+            margin-bottom: 10px;
+            background: var(--paper);
+        }
+        
+        .feed-slot .time {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--forest-deep);
+            width: 70px;
+        }
+        
+        .feed-slot .info {
+            flex: 1;
+            padding: 0 14px;
+        }
+        
+        .feed-slot .info b {
+            display: block;
+            font-size: 0.92rem;
+        }
+        
+        .feed-slot .info span {
+            font-size: 0.78rem;
+            color: #6b7a6c;
+        }
+        
+        .toggle {
+            width: 44px;
+            height: 24px;
+            border-radius: 20px;
+            background: var(--sky);
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background .2s;
+        }
+        
+        .toggle.on {
+            background: var(--moss);
+        }
+        
+        .toggle::after {
+            content: "";
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--paper);
+            transition: left .2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .toggle.on::after {
+            left: 23px;
+        }
+        /* ---------- MAP IMPROVEMENTS ---------- */
+        
+        .map-wrap {
+            position: relative;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #111;
+            height: 550px;
+            /* Un poco más alto para mayor visibilidad */
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        #campusMap {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .map-controls-top {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .map-badge {
+            position: static;
+            background: rgba(22, 48, 29, 0.9);
+            backdrop-filter: blur(8px);
+            color: var(--paper);
+            padding: 10px 18px;
+            border-radius: 14px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .map-recenter {
+            position: static;
+            background: var(--paper);
+            color: var(--forest-deep);
+            border: 1.5px solid var(--line);
+            padding: 10px 16px;
+            border-radius: 14px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            pointer-events: auto;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+        
+        .map-recenter:hover {
+            background: var(--forest);
+            color: var(--paper);
+            border-color: var(--forest);
+            transform: translateY(-2px);
+        }
+        
+        .map-legend {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(252, 250, 243, 0.92);
+            backdrop-filter: blur(8px);
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 280px;
+            z-index: 1000;
+            border: 1px solid var(--line);
+        }
+        
+        .map-legend .li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .map-legend .sw {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.8);
+        }
+        /* Custom modern popups */
+        
+        .leaflet-popup-content-wrapper {
+            background: rgba(252, 250, 243, 0.96) !important;
+            backdrop-filter: blur(4px);
+            border-radius: 16px !important;
+            box-shadow: var(--shadow) !important;
+            border: 1px solid var(--line);
+        }
+        
+        .leaflet-popup-content {
+            font-size: 0.85rem !important;
+            line-height: 1.4 !important;
+            margin: 12px 16px !important;
+        }
+        
+        .leaflet-popup-content b {
+            font-family: 'Fraunces', serif;
+            color: var(--forest-deep);
+            font-size: 0.95rem;
+        }
+        
+        .campus-pin {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .campus-pin:hover {
+            transform: scale(1.2) !important;
+            z-index: 9999 !important;
+        }
+        /* ---------- TOAST ---------- */
+        
+        #toast {
+            position: fixed;
+            bottom: 26px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--forest-deep);
+            color: var(--paper);
+            padding: 14px 24px;
+            border-radius: 14px;
+            font-size: 0.88rem;
+            font-weight: 500;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 999;
+            transition: transform .35s cubic-bezier(.2, .9, .3, 1.2);
+        }
+        
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+        /* ---------- REPORT FORM ---------- */
+        
+        .severity-picker {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+        
+        .sev-opt {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            border-radius: 12px;
+            border: 1.5px solid var(--line);
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #6b7a6c;
+            transition: all .15s;
+        }
+        
+        .sev-opt.sel-low.active {
+            background: #DEEFD9;
+            border-color: #2E6B36;
+            color: #2E6B36;
+        }
+        
+        .sev-opt.sel-mid.active {
+            background: #FBE5C8;
+            border-color: #9A5B12;
+            color: #9A5B12;
+        }
+        
+        .sev-opt.sel-high.active {
+            background: #F7D9D0;
+            border-color: #A6402A;
+            color: #A6402A;
+        }
+        /* Volunteer */
+        
+        .vol-card {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            padding: 18px;
+            border-radius: 16px;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            margin-bottom: 12px;
+        }
+        
+        .vol-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--sky);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        
+        .hours-bar {
+            height: 6px;
+            background: var(--sky);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 6px;
+            width: 140px;
+        }
+        
+        .hours-bar>div {
+            height: 100%;
+            background: var(--clay);
+        }
+        /* scrollbar */
+        
+         ::-webkit-scrollbar {
+            width: 9px;
+        }
+        
+         ::-webkit-scrollbar-thumb {
+            background: var(--moss);
+            border-radius: 10px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-wrap" id="loginView">
+        <div class="leaf" style="top:-30px;left:-30px;">🌿</div>
+        <div class="leaf" style="bottom:-40px;right:-20px;">🐾</div>
+        <div class="login-card">
+            <div class="paw-big">🐾</div>
+            <h1>Campus Vivo</h1>
+            <p class="sub">Cuidamos juntos a la fauna de la universidad. Inicia sesión para continuar.</p>
+            <label>Correo institucional</label>
+            <input type="email" placeholder="tu.nombre@universidad.edu" value="ana.rios@universidad.edu">
+            <label>Contraseña</label>
+            <input type="password" placeholder="••••••••" value="campusvivo">
+            <button class="btn btn-primary btn-block" onclick="enterApp()">Ingresar al campus 🐕</button>
+            <div class="divider">o continúa como</div>
+            <button class="btn btn-ghost btn-block" onclick="enterApp()">Visitante / Reportar avistamiento</button>
+        </div>
+    </div>
+
+    <div id="app" class="hidden">
+        <aside class="sidebar">
+            <div class="brand"><span class="paw">🐾</span><span>Campus Vivo</span></div>
+            <div class="trail">
+                <div class="nav-item active" data-view="inicio"><span class="dot"></span>Inicio</div>
+                <div class="nav-item" data-view="directorio"><span class="dot"></span>Directorio animal</div>
+                <div class="nav-item" data-view="detalle"><span class="dot"></span>Ficha de animal</div>
+                <div class="nav-item" data-view="alimentacion"><span class="dot"></span>Alimentación</div>
+                <div class="nav-item" data-view="reporte"><span class="dot"></span>Reportar avistamiento</div>
+                <div class="nav-item" data-view="adopcion"><span class="dot"></span>Adopción</div>
+                <div class="nav-item" data-view="mapa"><span class="dot"></span>Mapa del campus</div>
+                <div class="nav-item" data-view="voluntariado"><span class="dot"></span>Voluntariado</div>
+            </div>
+            <div class="sidebar-footer">Universidad · Bienestar Animal<br>v1.0 — hecho con 💚</div>
+        </aside>
+
+        <main>
+
+            <section class="view active" id="v-inicio">
+                <div class="eyebrow">Panel general</div>
+                <h1 class="page-title">Buenos días, Ana 🌤️</h1>
+                <p class="subtitle">Así está hoy la fauna del campus. 12 especies bajo cuidado activo en 6 zonas registradas.</p>
+
+                <div class="grid g-4" style="margin-bottom:26px;">
+                    <div class="card stat-card">
+                        <div class="icon">🐶</div>
+                        <div class="num">27</div>
+                        <div class="lbl">Animales registrados</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="icon">🍽️</div>
+                        <div class="num">4</div>
+                        <div class="lbl">Alimentaciones pendientes hoy</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="icon">🏡</div>
+                        <div class="num">5</div>
+                        <div class="lbl">En proceso de adopción</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="icon">🚨</div>
+                        <div class="num">2</div>
+                        <div class="lbl">Reportes sin atender</div>
+                    </div>
+                </div>
+
+                <div class="grid g-2">
+                    <div class="card">
+                        <h3 style="margin-top:0;color:var(--forest-deep);">Actividad reciente</h3>
+                        <div style="display:flex;flex-direction:column;gap:14px;margin-top:14px;">
+                            <div style="display:flex;gap:12px;align-items:flex-start;">
+                                <span style="font-size:1.3rem;">🐈</span>
+                                <div><b style="font-size:0.9rem;">Michi fue alimentada</b><br><span style="font-size:0.78rem;color:#6b7a6c;">Facultad de Ingeniería · hace 20 min</span></div>
+                            </div>
+                            <div style="display:flex;gap:12px;align-items:flex-start;">
+                                <span style="font-size:1.3rem;">🐿️</span>
+                                <div><b style="font-size:0.9rem;">Nuevo avistamiento: ardilla con pata lastimada</b><br><span style="font-size:0.78rem;color:#6b7a6c;">Jardín central · hace 1 h</span></div>
+                            </div>
+                            <div style="display:flex;gap:12px;align-items:flex-start;">
+                                <span style="font-size:1.3rem;">🐕</span>
+                                <div><b style="font-size:0.9rem;">Rocko fue solicitado en adopción</b><br><span style="font-size:0.78rem;color:#6b7a6c;">Por Carlos M. · hace 3 h</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="background:var(--forest);color:var(--paper);">
+                        <div style="font-size:2rem;">🐦</div>
+                        <h3 style="color:var(--paper);margin:10px 0 4px;">Animal del día</h3>
+                        <p style="font-size:0.85rem;opacity:0.85;margin:0 0 14px;">Paloma — encontrada con el ala herida cerca de Biblioteca. En recuperación.</p>
+                        <button class="btn btn-amber btn-block" onclick="showView('detalle')">Ver ficha completa</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="view" id="v-directorio">
+                <div class="eyebrow">Fauna del campus</div>
+                <h1 class="page-title">Directorio animal</h1>
+                <p class="subtitle">Explora todos los animales registrados y su estado de cuidado.</p>
+
+                <div class="filters">
+                    <div class="chip active" onclick="filterAnimals('todos',this)">Todos</div>
+                    <div class="chip" onclick="filterAnimals('Perro',this)">🐶 Perros</div>
+                    <div class="chip" onclick="filterAnimals('Gato',this)">🐱 Gatos</div>
+                    <div class="chip" onclick="filterAnimals('Ave',this)">🐦 Aves</div>
+                    <div class="chip" onclick="filterAnimals('Ardilla',this)">🐿️ Ardillas</div>
+                </div>
+
+                <div class="grid g-4" id="animalGrid"></div>
+            </section>
+
+            <section class="view" id="v-detalle">
+                <div class="eyebrow">Ficha individual</div>
+                <div class="detail-hero">
+                    <div class="avatar">🐦</div>
+                    <div>
+                        <h2>Paloma</h2>
+                        <div style="opacity:0.85;font-size:0.9rem;">Ave · Hembra · Encontrada: Marzo 2026</div>
+                        <div class="tags">
+                            <span>📍 Biblioteca central</span>
+                            <span>🩹 En recuperación</span>
+                            <span>👤 Cuidador: Luis T.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid g-2">
+                    <div class="card">
+                        <h3 style="margin-top:0;">Historial de cuidado</h3>
+                        <p style="font-size:0.85rem;color:#5b6b5c;line-height:1.6;">Ala izquierda con fractura leve tratada por el equipo veterinario voluntario. Revisión semanal. Se recomienda mantener en zona protegida hasta liberación.</p>
+                        <label style="margin-top:14px;">Progreso de recuperación</label>
+                        <div class="progress-bar">
+                            <div style="width:68%;"></div>
+                        </div>
+                        <span style="font-size:0.78rem;color:#6b7a6c;">68% — Alta estimada en 2 semanas</span>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top:0;">Acciones rápidas</h3>
+                        <button class="btn btn-primary btn-block" style="margin-bottom:10px;" onclick="toast('Alimentación registrada 🍽️')">Registrar alimentación</button>
+                        <button class="btn btn-ghost btn-block" style="margin-bottom:10px;" onclick="toast('Nota veterinaria guardada 📋')">Agregar nota veterinaria</button>
+                        <button class="btn btn-ghost btn-block" onclick="showView('reporte')">Reportar incidente</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="view" id="v-alimentacion">
+                <div class="eyebrow">Rutinas diarias</div>
+                <h1 class="page-title">Calendario de alimentación</h1>
+                <p class="subtitle">Activa o desactiva las rondas de alimentación de hoy por zona.</p>
+
+                <div id="feedList"></div>
+            </section>
+
+            <section class="view" id="v-reporte">
+                <div class="eyebrow">Comunidad universitaria</div>
+                <h1 class="page-title">Reportar avistamiento o incidente</h1>
+                <p class="subtitle">¿Viste un animal en el campus que necesita ayuda? Cuéntanos.</p>
+
+                <div class="grid g-2">
+                    <div class="card">
+                        <label>Tipo de animal</label>
+                        <select>
+            <option>🐶 Perro</option><option>🐱 Gato</option><option>🐦 Ave</option>
+            <option>🐿️ Ardilla</option><option>❓ No estoy seguro</option>
+          </select>
+                        <label>Ubicación en el campus</label>
+                        <input type="text" placeholder="Ej. Cafetería central, edificio B...">
+                        <label>Nivel de urgencia</label>
+                        <div class="severity-picker">
+                            <div class="sev-opt sel-low" onclick="pickSeverity(this,'low')">🟢 Estable</div>
+                            <div class="sev-opt sel-mid" onclick="pickSeverity(this,'mid')">🟡 Atención</div>
+                            <div class="sev-opt sel-high" onclick="pickSeverity(this,'high')">🔴 Urgente</div>
+                        </div>
+                        <label>Descripción</label>
+                        <textarea placeholder="Describe lo que observaste: comportamiento, heridas visibles, etc."></textarea>
+                        <button class="btn btn-primary btn-block" onclick="toast('¡Reporte enviado! El equipo de bienestar animal fue notificado 🐾')">Enviar reporte</button>
+                    </div>
+                    <div class="card" style="background:var(--sky);">
+                        <h3 style="margin-top:0;color:var(--forest-deep);">💡 ¿Qué pasa después?</h3>
+                        <ol style="font-size:0.85rem;color:#3f4f40;line-height:1.9;padding-left:18px;">
+                            <li>Tu reporte llega al equipo de voluntarios más cercano.</li>
+                            <li>Se evalúa la urgencia y se asigna un cuidador.</li>
+                            <li>El animal se registra en el directorio si es nuevo.</li>
+                            <li>Recibirás una notificación con el seguimiento.</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <section class="view" id="v-adopcion">
+                <div class="eyebrow">Un hogar para cada uno</div>
+                <h1 class="page-title">Solicitud de adopción</h1>
+                <p class="subtitle">Completa el formulario para iniciar el proceso de adopción responsable.</p>
+
+                <div class="grid g-2">
+                    <div class="card">
+                        <div class="field-row">
+                            <div><label>Nombre completo</label><input type="text" placeholder="Tu nombre"></div>
+                            <div><label>Matrícula / Rol</label><input type="text" placeholder="Estudiante / Docente / Personal"></div>
+                        </div>
+                        <label>Animal de interés</label>
+                        <select>
+            <option>🐕 Rocko — Perro mestizo</option>
+            <option>🐈 Michi — Gata atigrada</option>
+            <option>🐦 Paloma — En recuperación (no disponible aún)</option>
+          </select>
+                        <label>¿Cuentas con espacio adecuado y permiso de vivienda?</label>
+                        <select><option>Sí</option><option>No</option><option>En trámite</option></select>
+                        <label>Cuéntanos por qué quieres adoptar</label>
+                        <textarea placeholder="Motivación, experiencia previa con mascotas..."></textarea>
+                        <button class="btn btn-amber btn-block" onclick="toast('Solicitud de adopción enviada 🏡 Te contactaremos pronto')">Enviar solicitud</button>
+                    </div>
+                    <div class="card">
+                        <h3 style="margin-top:0;">En proceso de adopción</h3>
+                        <div class="animal-card" style="margin-bottom:14px;" onclick="showView('detalle')">
+                            <div class="animal-media" style="background:#F7D9D0;">🐕</div>
+                            <div class="animal-body">
+                                <h3>Rocko</h3>
+                                <div class="meta">Perro · 2 años · Sociable</div>
+                                <span class="badge warn">3 solicitudes activas</span>
+                            </div>
+                        </div>
+                        <div class="animal-card" onclick="showView('detalle')">
+                            <div class="animal-media" style="background:#DEEFD9;">🐈</div>
+                            <div class="animal-body">
+                                <h3>Michi</h3>
+                                <div class="meta">Gata · 1 año · Tranquila</div>
+                                <span class="badge ok">Lista para adopción</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="view" id="v-mapa">
+                <div class="eyebrow">Geolocalización</div>
+                <h1 class="page-title">Mapa del campus</h1>
+                <p class="subtitle">Visualiza de forma satelital los puntos de alimentación, refugios y últimos avistamientos dentro de las instalaciones universitarias.</p>
+
+                <div class="map-wrap">
+                    <div class="map-controls-top">
+                        <div class="map-badge">🌿 Vista Satelital · Sede del Campus</div>
+                        <button class="map-recenter" onclick="recenterCampusMap()">📍 Centrar Campus</button>
+                    </div>
+                    <div id="campusMap"></div>
+                    <div class="map-legend">
+                        <div class="li"><span class="sw" style="background:#25462F;"></span>Alimentación</div>
+                        <div class="li"><span class="sw" style="background:#C1694A;"></span>Refugio</div>
+                        <div class="li"><span class="sw" style="background:#E6A54C;"></span>Recuperación</div>
+                        <div class="li"><span class="sw" style="background:#A6402A;"></span>Reporte nuevo</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="view" id="v-voluntariado">
+                <div class="eyebrow">Comunidad de cuidado</div>
+                <h1 class="page-title">Voluntariado</h1>
+                <p class="subtitle">Súmate a las brigadas de alimentación, rescate y adopción.</p>
+
+                <div class="grid g-2">
+                    <div class="card">
+                        <h3 style="margin-top:0;">Voluntarios activos</h3>
+                        <div class="vol-card">
+                            <div class="vol-avatar">👩</div>
+                            <div style="flex:1;">
+                                <b style="font-size:0.9rem;">Luis Torres</b><br>
+                                <span style="font-size:0.78rem;color:#6b7a6c;">Brigada de alimentación · 14 h este mes</span>
+                                <div class="hours-bar">
+                                    <div style="width:70%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vol-card">
+                            <div class="vol-avatar">🧑</div>
+                            <div style="flex:1;">
+                                <b style="font-size:0.9rem;">Carlos Méndez</b><br>
+                                <span style="font-size:0.78rem;color:#6b7a6c;">Rescate y traslados · 9 h este mes</span>
+                                <div class="hours-bar">
+                                    <div style="width:45%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vol-card">
+                            <div class="vol-avatar">👤</div>
+                            <div style="flex:1;">
+                                <b style="font-size:0.9rem;">Ana Ríos</b><br>
+                                <span style="font-size:0.78rem;color:#6b7a6c;">Coordinación adopciones · 18 h este mes</span>
+                                <div class="hours-bar">
+                                    <div style="width:90%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="background:var(--forest);color:var(--paper);">
+                        <h3 style="color:var(--paper);margin-top:0;">Únete a una brigada</h3>
+                        <label style="color:var(--sky);">Nombre</label>
+                        <input type="text" placeholder="Tu nombre" style="margin-bottom:14px;">
+                        <label style="color:var(--sky);">Brigada de interés</label>
+                        <select style="margin-bottom:14px;">
+            <option>🍽️ Alimentación diaria</option>
+            <option>🚑 Rescate y traslados</option>
+            <option>🏡 Coordinación de adopciones</option>
+            <option>📋 Registro y censo</option>
+          </select>
+                        <button class="btn btn-amber btn-block" onclick="toast('¡Bienvenido a la brigada! 🐾 Te contactaremos pronto')">Quiero ser voluntario</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        /* ---------- Navegación ---------- */
+        function enterApp() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            renderAnimals(animals);
+            renderFeed();
+        }
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => showView(item.dataset.view));
+        });
+
+        function showView(name) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('v-' + name).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === name));
+            document.querySelector('main').scrollTo(0, 0);
+            window.scrollTo(0, 0);
+            if (name === 'mapa') {
+                setTimeout(initCampusMap, 60);
+            }
+        }
+
+        /* ---------- Datos de animales ---------- */
+        const animals = [{
+            name: 'Rocko',
+            type: 'Perro',
+            emoji: '🐕',
+            bg: '#F7D9D0',
+            meta: '2 años · Sociable',
+            badge: ['warn', 'En adopción']
+        }, {
+            name: 'Michi',
+            type: 'Gato',
+            emoji: '🐈',
+            bg: '#DEEFD9',
+            meta: '1 año · Tranquila',
+            badge: ['ok', 'Disponible']
+        }, {
+            name: 'Paloma',
+            type: 'Ave',
+            emoji: '🐦',
+            bg: '#FBE5C8',
+            meta: 'Adulta · En recuperación',
+            badge: ['care', 'En tratamiento']
+        }, {
+            name: 'Nuez',
+            type: 'Ardilla',
+            emoji: '🐿️',
+            bg: '#EAD9C4',
+            meta: 'Joven · Activa',
+            badge: ['ok', 'Saludable']
+        }, {
+            name: 'Firulais',
+            type: 'Perro',
+            emoji: '🐕‍🦺',
+            bg: '#F7D9D0',
+            meta: '4 años · Guardián',
+            badge: ['ok', 'Esterilizado']
+        }, {
+            name: 'Luna',
+            type: 'Gato',
+            emoji: '🐱',
+            bg: '#DEEFD9',
+            meta: '6 meses · Juguetona',
+            badge: ['warn', 'Vacunación pendiente']
+        }, {
+            name: 'Piolín',
+            type: 'Ave',
+            emoji: '🐤',
+            bg: '#FBE5C8',
+            meta: 'Cría · Nido cuidado',
+            badge: ['ok', 'Monitoreo']
+        }, {
+            name: 'Avellana',
+            type: 'Ardilla',
+            emoji: '🐿️',
+            bg: '#EAD9C4',
+            meta: 'Adulta · Territorial',
+            badge: ['care', 'Pata lastimada']
+        }, ];
+
+        function renderAnimals(list) {
+            const grid = document.getElementById('animalGrid');
+            grid.innerHTML = list.map(a => `
+    <div class="animal-card" onclick="showView('detalle')">
+      <div class="animal-media" style="background:${a.bg};">${a.emoji}</div>
+      <div class="animal-body">
+        <h3>${a.name}</h3>
+        <div class="meta">${a.type} · ${a.meta}</div>
+        <span class="badge ${a.badge[0]}">${a.badge[1]}</span>
+      </div>
+    </div>
+  `).join('');
+        }
+
+        function filterAnimals(type, el) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            renderAnimals(type === 'todos' ? animals : animals.filter(a => a.type === type));
+        }
+
+        /* ---------- Alimentación ---------- */
+        const feeds = [{
+            time: '07:00',
+            zone: 'Jardín central',
+            detail: 'Ardillas y aves · ración de semillas',
+            on: true
+        }, {
+            time: '09:30',
+            zone: 'Biblioteca',
+            detail: 'Palomas · mezcla de granos',
+            on: true
+        }, {
+            time: '13:00',
+            zone: 'Cafetería',
+            detail: 'Gatos · croquetas + agua',
+            on: false
+        }, {
+            time: '17:30',
+            zone: 'Estacionamiento norte',
+            detail: 'Perros · alimento seco',
+            on: true
+        }, {
+            time: '19:00',
+            zone: 'Ingeniería',
+            detail: 'Gatos y perros · ronda nocturna',
+            on: false
+        }, ];
+
+        function renderFeed() {
+            const wrap = document.getElementById('feedList');
+            wrap.innerHTML = feeds.map((f, i) => `
+    <div class="feed-slot">
+      <div class="time">${f.time}</div>
+      <div class="info"><b>${f.zone}</b><span>${f.detail}</span></div>
+      <div class="toggle ${f.on?'on':''}" onclick="toggleFeed(${i}, this)"></div>
+    </div>
+  `).join('');
+        }
+
+        function toggleFeed(i, el) {
+            feeds[i].on = !feeds[i].on;
+            el.classList.toggle('on');
+            toast(feeds[i].on ? `Ronda de ${feeds[i].zone} activada ✅` : `Ronda de ${feeds[i].zone} pausada ⏸️`);
+        }
+
+        /* ---------- Reporte severidad ---------- */
+        function pickSeverity(el, level) {
+            document.querySelectorAll('.sev-opt').forEach(o => o.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        /* ---------- MAPA DEL CAMPUS ACTUALIZADO (Satélite Real de la Universidad) ---------- */
+        const CAMPUS_CENTER = [20.009316126760975, -99.34327793739767];
+
+        // Puntos de cuidado distribuidos estratégicamente sobre los techos/edificios reales visibles en el satélite
+        const mapPoints = [{
+            name: 'Rocko — Perro',
+            detail: 'Punto de alimentación · Edificio de Biblioteca Central',
+            lat: 20.009800,
+            lng: -99.343600,
+            color: '#25462F',
+            emoji: '🐕'
+        }, {
+            name: 'Michi — Gata',
+            detail: 'Refugio techado · Edificio de Ingeniería',
+            lat: 20.009100,
+            lng: -99.342700,
+            color: '#C1694A',
+            emoji: '🐈'
+        }, {
+            name: 'Paloma — Ave',
+            detail: 'Jaula de recuperación · Área verde de Biblioteca',
+            lat: 20.009950,
+            lng: -99.343100,
+            color: '#E6A54C',
+            emoji: '🐦'
+        }, {
+            name: 'Ardilla herida',
+            detail: 'Reporte reciente · Jardín Central / Explanada',
+            lat: 20.008850,
+            lng: -99.343350,
+            color: '#A6402A',
+            emoji: '🐿️'
+        }, ];
+
+        let campusMap = null;
+
+        function pinIcon(emoji, color, size) {
+            size = size || 32;
+            return L.divIcon({
+                className: 'campus-pin',
+                html: `<div style="width:${size}px;height:${size}px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2px solid #FCFAF3;box-shadow:0 4px 10px rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;">
+            <span style="transform:rotate(45deg);font-size:${size*0.52}px; display:block; margin-top:-2px; margin-left:-2px;">${emoji}</span>
+          </div>`,
+                iconSize: [size, size],
+                iconAnchor: [size / 2, size]
+            });
+        }
+
+        function initCampusMap() {
+            if (campusMap) {
+                campusMap.invalidateSize();
+                return;
+            }
+
+            // Inicializar mapa con un zoom ideal para apreciar los edificios de forma satelital
+            campusMap = L.map('campusMap', {
+                scrollWheelZoom: false,
+                zoomControl: false
+            }).setView(CAMPUS_CENTER, 18);
+
+            // Agregar el control de zoom en una esquina más limpia
+            L.control.zoom({
+                position: 'bottomright'
+            }).addTo(campusMap);
+
+            // CAPA SATELITAL DE ALTA RESOLUCIÓN (Esri World Imagery)
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                maxZoom: 19
+            }).addTo(campusMap);
+
+            // Marcador de la Universidad (Icono principal de la sede)
+            L.marker(CAMPUS_CENTER, {
+                    icon: pinIcon('🎓', '#16301D', 38),
+                    zIndexOffset: 1000
+                })
+                .addTo(campusMap)
+                .bindPopup('<b>Universidad</b><br>Sede de Rectoría y Centro de Operaciones Campus Vivo')
+                .on('click', () => mapInfo('Universidad', 'Sede central del campus'));
+
+            // Generar puntos de la fauna sobre el terreno satelital
+            mapPoints.forEach(p => {
+                L.marker([p.lat, p.lng], {
+                        icon: pinIcon(p.emoji, p.color)
+                    })
+                    .addTo(campusMap)
+                    .bindPopup(`<b>${p.name}</b><br>${p.detail}`)
+                    .on('click', () => mapInfo(p.name, p.detail));
+            });
+
+            // Habilitar zoom dinámico solo cuando el usuario interactúa conscientemente
+            campusMap.on('click', () => campusMap.scrollWheelZoom.disable());
+            campusMap.getContainer().addEventListener('mouseenter', () => campusMap.scrollWheelZoom.enable());
+            campusMap.getContainer().addEventListener('mouseleave', () => campusMap.scrollWheelZoom.disable());
+        }
+
+        function recenterCampusMap() {
+            if (campusMap) {
+                campusMap.setView(CAMPUS_CENTER, 18);
+            }
+        }
+
+        function mapInfo(name, detail) {
+            toast(`${name} · ${detail}`);
+        }
+
+        /* ---------- Toast ---------- */
+        let toastTimer;
+
+        function toast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+        }
+    </script>
+</body>
+
+</html>

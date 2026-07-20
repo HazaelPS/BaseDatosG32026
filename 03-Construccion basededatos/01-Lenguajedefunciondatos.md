@@ -1,27 +1,31 @@
-# COnstrucción de Base de Datos con Lenguaje SQL
+# Construcción de Base de Datos con Lenguaje SQL
 
-EL lenguaje SQL (Structure Query Language), se divide en cinco grandes categorias:
+El lenguaje SQL (Structured Query Language), se divide en cinco grandes categorías:
 
-1. Con DDL (Data Definition Languaje)
+1. DDL (Data Definition Language)
 2. DML (Data Manipulation Language)
 3. DQL (Data Query Language)
-4. DCL (Data Control Language - Controla Permisos ) - GRANT, REVOICE
-5. TCL (Transaction Control Language - Controla Transiciones) - BEGIN TRANSACTION, COMMIT, ROLLBACK, SAVEPOINT
+4. DCL (Data Control Language - Controla Permisos) - GRANT, REVOKE
+5. TCL (Transaction Control Language - Controla Transacciones) - BEGIN TRANSACTION, COMMIT, ROLLBACK, SAVEPOINT
 
 ## SQL-DDL
+
 **Lenguaje de definición de Datos**
 
 Se utiliza para **crear y modificar la estructura** de una base de datos
 
 Con DDL trabajamos sobre los objetos de la base de datos
 - __Base de datos__
+
 - __Tablas__
-- _Restricciones__
+
+- __Restricciones__
+
 - Vistas
 - Índices
 - Esquemas
-- Store Procedures
-- Fuctions
+- Stored Procedures
+- Functions
 - Triggers
 
 **Comandos Principales**
@@ -31,9 +35,9 @@ Con DDL trabajamos sobre los objetos de la base de datos
 | ALTER | Modificar una estructura existente |
 | DROP | Elimina objetos de base de datos |
 | TRUNCATE | Eliminar todos los registros de una tabla |
-| RENAME | Cambiar el nombre de un objeto( según SGBD) |
+| RENAME | Cambiar el nombre de un objeto (según SGBD) |
 
-## SQL_DML
+## SQL-DML
 **Lenguaje de Manipulación de Datos**
 
 Sirve para trabajar con la información almacenada.
@@ -47,13 +51,12 @@ Con este lenguaje no se cambia la estructura, sino los registros.
 | UPDATE | Actualiza registros |
 | DELETE | Elimina registros |
 
-
 ## SQL-DQL
 **Lenguaje de Consulta de Datos**
 
 Su función es **consultar información** de la base de datos.
 
-Este es probablemente el grupo mas utilizado, ya que permite obtener información de la base de datos.
+Este es probablemente el grupo más utilizado, ya que permite obtener información de la base de datos.
 
 **Comandos Principales**
 | Comando | Función |
@@ -70,27 +73,27 @@ Generalmente se combina con:
 - LIMIT / TOP: Para limitar la cantidad de registros obtenidos
 - UNION: Para unir resultados de varias consultas
 - Funciones de Agregado (SUM, AVG, COUNT, MAX, MIN): Para obtener información resumida
-- Window Functions (ROW_NUMBER, RANK, DENSE_RANK, etc.): Para obtener información resumida con particiones
+- Window Functions (ROW_NUMBER, RANK, DENSE_RANK, etc.): Para obtener información con particiones y ordenamientos, sin colapsar las filas
 
 ## Nomenclatura para la construcción de las Bases de Datos (Snake case)
 
-La nomenclatura o convención que mas se recomienda hoy si se busca una nomenclatura moderna,
- portable y alineada con buenas practicas en distintos motores de base de datos.
+La nomenclatura o convención que más se recomienda hoy si se busca una nomenclatura moderna,
+portable y alineada con buenas prácticas en distintos motores de base de datos.
 
 La razón es que funciona de forma consistente en **SQL SERVER, MYSQL O MARIADB** y especialmente
- en **POSTGRESTSQL**, donde los identificadores sin comillas se convierten automáticamente a
- minusculas. Con **Snake_case** evitas problemas de mayúsculas y haces que las consultas sean más
- legibles.
+en **PostgreSQL**, donde los identificadores sin comillas se convierten automáticamente a
+minúsculas. Con **snake_case** evitas problemas de mayúsculas y haces que las consultas sean más
+legibles.
 
-| Objeto | Convección | Ejemplo |
-|---------- ;|-------------- ;|-------------; |
+| Objeto | Convención | Ejemplo |
+|---------|-------------|-------------|
 | Base de Datos | snake_case | control_escolar |
 | Esquema | snake_case | ventas, rh, seguridad |
 | Tabla | Singular en snake_case | cliente, pedido, detalle_pedido |
 | Columna | snake_case | cliente_id, fecha_registro, correo_electronico |
-| PK | <tabla>_id | cliente_id, producto_id |
-| FK | Ogial que la PK referenciada | cliente_id, producto_id |
-| Tabla fuente | <tabla1>_<tabla2> | alumno_curso, producto_proveedor |
+| PK | \<tabla\>_id | cliente_id, producto_id |
+| FK | Igual que la PK referenciada | cliente_id, producto_id |
+| Tabla fuente | \<tabla1\>_\<tabla2\> | alumno_curso, producto_proveedor |
 
 ## Nombrar las Restricciones
 
@@ -107,5 +110,5 @@ La razón es que funciona de forma consistente en **SQL SERVER, MYSQL O MARIADB*
 - fk (Foreign Key)
 - uq (Unique)
 - ck (Check)
-- df (default)
-- ix (index)
+- df (Default)
+- ix (Index)
